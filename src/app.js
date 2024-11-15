@@ -3,7 +3,7 @@ import sequelize from "./config/database.js"; // import the sequelize connection
 import { Cab, Driver, Trip, Transaction, FuelLog, Bill, DailyEntry } from "./models/associations.js"; // import models and associations
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 // Middlewares and routes setup
 app.use(express.json());
