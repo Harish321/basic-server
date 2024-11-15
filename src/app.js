@@ -1,27 +1,26 @@
 import express from "express";
-import path from "path";
-import morgan from "morgan";
-
-import customerRoutes from "./routes/customer.routes.js";
-import { fileURLToPath } from "url";
+import sequelize from "./config/database.js"; // import the sequelize connection
+import { Cab, Driver, Trip, Transaction, FuelLog, Bill, DailyEntry } from "./models/associations.js"; // import models and associations
 
 const app = express();
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const port = process.env.PORT || 3000;
 
-// settings
-app.set("port", process.env.PORT || 3000);
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
+// Middlewares and routes setup
+app.use(express.json());
 
-// middlewares
-app.use(morgan("dev"));
-app.use(express.urlencoded({ extended: false }));
+// Example route
+app.get("/", (req, res) => {
+    res.send("Welcome to the Cab App API");
+});
 
-// routes
-app.use(customerRoutes);
+// Synchronize the database
+sequelize.sync({ alter: true }).then(() => {
+    console.log("Database synchronized!");
+}).catch((error) => {
+    console.error("Error synchronizing the database:", error);
+});
 
-// static files
-app.use(express.static(path.join(__dirname, "public")));
-
-// starting the server
-export default app;
+// Start the server
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+});
