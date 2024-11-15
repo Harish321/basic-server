@@ -1,4 +1,5 @@
 import express from "express";
+import cors from 'cors'; // Import CORS
 import sequelize from "./config/database.js"; // import the sequelize connection
 import { Cab, Driver, Trip, Transaction, FuelLog, Bill, DailyEntry } from "./models/associations.js"; // import models and associations
 
@@ -7,6 +8,8 @@ const port = process.env.PORT || 5000;
 
 // Middlewares and routes setup
 app.use(express.json());
+app.use(cors());  // This will enable CORS for all routes
+
 
 // Example route
 app.get("/", (req, res) => {
