@@ -1,26 +1,30 @@
-import FuelLog from "../models/FuelLog.js";
+import { FuelLog, Cab } from "../models/associations.js";
 
 // Get all fuel logs
 export const getAllFuelLogs = async (req, res) => {
     try {
-        const fuelLogs = await FuelLog.findAll();
+        const fuelLogs = await FuelLog.findAll({
+            include: [{ model: Cab, attributes: ["name", "cabNo"] }]
+        });
         res.json(fuelLogs);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-// Get a single fuel log by ID
+// Get fuel log by ID
 export const getFuelLogById = async (req, res) => {
     try {
-        const fuelLog = await FuelLog.findByPk(req.params.id);
+        const fuelLog = await FuelLog.findByPk(req.params.id, {
+            include: [{ model: Cab, attributes: ["name", "cabNo"] }]
+        });
         fuelLog ? res.json(fuelLog) : res.status(404).json({ error: "Fuel log not found" });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-// Create a new fuel log
+// Create a fuel log
 export const createFuelLog = async (req, res) => {
     try {
         const fuelLog = await FuelLog.create(req.body);
@@ -30,7 +34,7 @@ export const createFuelLog = async (req, res) => {
     }
 };
 
-// Update an existing fuel log
+// Update a fuel log
 export const updateFuelLog = async (req, res) => {
     try {
         const fuelLog = await FuelLog.findByPk(req.params.id);

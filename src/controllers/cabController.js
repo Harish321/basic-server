@@ -1,26 +1,36 @@
-import Cab from "../models/Cab.js";
+import { Cab, Trip, FuelLog, Transaction, Bill, DailyEntry } from "../models/associations.js";
 
 // Get all cabs
 export const getAllCabs = async (req, res) => {
     try {
-        const cabs = await Cab.findAll();
+        const cabs = await Cab.findAll({
+            include: [{ model: Trip }, { model: FuelLog }]
+        });
         res.json(cabs);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-// Get a single cab by ID
+// Get cab by ID with associated data
 export const getCabById = async (req, res) => {
     try {
-        const cab = await Cab.findByPk(req.params.id);
+        const cab = await Cab.findByPk(req.params.id, {
+            include: [
+                { model: Trip },
+                { model: FuelLog },
+                { model: Transaction },
+                { model: Bill },
+                { model: DailyEntry }
+            ]
+        });
         cab ? res.json(cab) : res.status(404).json({ error: "Cab not found" });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-// Create a new cab
+// Create a cab
 export const createCab = async (req, res) => {
     try {
         const cab = await Cab.create(req.body);
@@ -30,7 +40,7 @@ export const createCab = async (req, res) => {
     }
 };
 
-// Update an existing cab
+// Update a cab
 export const updateCab = async (req, res) => {
     try {
         const cab = await Cab.findByPk(req.params.id);
